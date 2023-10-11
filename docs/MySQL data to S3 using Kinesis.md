@@ -4,7 +4,7 @@
 
 ![img20](/images/img20.png)
 
-This architecture diagram presents an alternative data ingestion approach for transferring data from the MySQL database to the target S3 bucket. By implementing this method, you can bypass the initial setup steps detailed in the [README.md](README.md) [Sections 4](https://github.com/simply-yun/analytics-workload/blob/main/README.md#4-setting-up-the-target-s3-bucket) and [Section 5](https://github.com/simply-yun/analytics-workload/blob/main/README.md#5-setting-up-database-migration-service-dms).
+This architecture diagram presents an alternative data ingestion approach for transferring data from the MySQL database to the target S3 bucket. By implementing this method, you can bypass the initial setup steps detailed in the README.md Sections 4 and Section 5.
 
 This method is preferred for a few reasons:
 

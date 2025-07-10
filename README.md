@@ -148,7 +148,7 @@ In this section, we will be creating an S3 bucket and its permission for the MyS
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| Bucket name | <add your bucket name here> |
+	| Bucket name | \<add your bucket name here> |
 	| AWS Region | US West (Oregon) us-west-2 |
 
 ### 4.2 Create the Role for DMS to access the Target S3 Bucket
@@ -264,7 +264,7 @@ The Replication Instance acts as the intermediary between the source and target 
 	| Endpoint identifier | target-endpoint |
 	| Source engine | Amazon S3 |
 	| Amazon Resource Name (ARN) for service access role | arn:aws:iam::\<AWS account ID>:policy/DMS_to_S3_role |
-	| Bucket name | <add your bucket name here> |
+	| Bucket name | \<add your bucket name here> |
 
 	The Amazon Resource Name (ARN) for service access role can be obtained from Section 4.2. 
 
@@ -387,7 +387,7 @@ In this section, the setting up of IAM policies and role will enable Glue Jobs t
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| Bucket name | <add your bucket2 name here> |
+	| Bucket name | \<add your bucket2 name here> |
 	| AWS Region | US West (Oregon) us-west-2 |
 3. This bucket will store processed data after Glue Jobs have completed their tasks.
 
@@ -420,8 +420,8 @@ The LOAD files in the S3 raw bucket are the original data moved from the MySQL d
 	    .getOrCreate()
 	
 	# S3 URIs
-	source_bucket = "s3://<add your bucket name here>/wordpress-db/"
-	destination_bucket = "s3://<add your bucket2 name here>/wordpress-db/"
+	source_bucket = "s3://\<add your bucket name here>/wordpress-db/"
+	destination_bucket = "s3://\<add your bucket2 name here>/wordpress-db/"
 	
 	# List of folders to process
 	folders_to_process = [
@@ -549,7 +549,7 @@ The CDC files are in the S3 Raw bucket and will need to be copied to the Process
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| S3 path | s3://<add your bucket2 name here>/wordpress-db/ |
+	| S3 path | s3://\<add your bucket2 name here>/wordpress-db/ |
 5. Click **Next** and fill in the following parameter value. 
 
 	| Parameter | Values |
@@ -593,7 +593,7 @@ This section will cover the use of Amazon Athena to query and analyze the proces
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| Location of query result | s3://<add your bucket2 name here>/athena-queries |
+	| Location of query result | s3://\<add your bucket2 name here>/athena-queries |
 
 	All the unsaved queries ran in Athena can be viewed in the S3 bucket of URI: `s3://<add your bucket2 name here>/athena-queries/Unsaved/`.
 
@@ -638,7 +638,7 @@ The clickstream data from the Kinesis Data Stream will be input to the Kinesis D
 	| Destination | Amazon S3 |
 	| Kinesis data stream | \<click Browse and select kds-clickstream-data> |
 	| Delivery stream name | kdf-clickstream-data |
-	| S3 bucket destination | s3://<add your bucket name here> |
+	| S3 bucket destination | s3://\<add your bucket name here> |
 	| S3 bucket prefix | clickstream-data/ |
 	| Buffer size | 1 MiB |
 	| Buffer interval | 60 seconds | 
@@ -705,7 +705,7 @@ This section updates the existing Glue Crawler to include the newly ingested cli
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| S3 path | s3://<add your bucket name here>/clickstream-data/ |
+	| S3 path | s3://\<add your bucket name here>/clickstream-data/ |
 6. Click **Next** three times followed by **Update**. 
 7. Click on **Run crawler** and wait for the State to update to `Completed`. 
 
@@ -798,7 +798,7 @@ These steps ensures that the output of the join operation has a designated stora
 			| Node parents | Change Schema - 3 |
 			| Format | Parquet |
 			| Compression Type | Snappy |
-			| S3 Target Location | s3://<add your bucket2 name here>/joint-tables/ |
+			| S3 Target Location | s3://\<add your bucket2 name here>/joint-tables/ |
 6. Click on the **Job details** tab and fill in the following parameter values. 
 
 	| Parameter | Values |
@@ -821,7 +821,7 @@ The AWS Glue Crawler is configured again to catalog the newly joined table. Cata
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| S3 path | s3://<add your bucket2 name here>/joint-tables/ |
+	| S3 path | s3://\<add your bucket2 name here>/joint-tables/ |
 6. Click **Next** three times followed by **Update**. 
 7. Click on **Run crawler** and wait for the State to update to `Completed`. 
 

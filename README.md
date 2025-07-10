@@ -144,11 +144,11 @@ In this section, we will be creating an S3 bucket and its permission for the MyS
 
 ### 4.1 Create the Target S3 Bucket
 1. Go to [S3 on the console](https://s3.console.aws.amazon.com/s3/).
-2. Click on **Create Bucket**, fill the following parameter values before clicking on **Create bucket**. 
+2. Click on **Create Bucket**, fill the following parameter values and replace `<<add your bucket name here>>` before clicking on **Create bucket**. 
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| Bucket name | application-migration-s3-raw |
+	| Bucket name | <<add your bucket name here>> |
 	| AWS Region | US West (Oregon) us-west-2 |
 
 ### 4.2 Create the Role for DMS to access the Target S3 Bucket
@@ -256,7 +256,7 @@ The Replication Instance acts as the intermediary between the source and target 
 ### 5.4 Configure the Target Endpoint
 1. Go to [AWS Database Migration Service on the console](https://console.aws.amazon.com/dms/v2/). 
 2. Click on `Endpoints` followed by **Create endpoint**. 
-3. Enter the following parameter values. If the parameter is not mentioned in the table, always leave it to the default value. 
+3. Enter the following parameter values and replace `<<add your bucket name here>>`. If the parameter is not mentioned in the table, always leave it to the default value. 
 
 	| Parameter | Values |
 	| ------------- |-------------|
@@ -264,7 +264,7 @@ The Replication Instance acts as the intermediary between the source and target 
 	| Endpoint identifier | target-endpoint |
 	| Source engine | Amazon S3 |
 	| Amazon Resource Name (ARN) for service access role | arn:aws:iam::\<AWS account ID>:policy/DMS_to_S3_role |
-	| Bucket name | application-migration-s3-raw |
+	| Bucket name | <<add your bucket name here>> |
 
 	The Amazon Resource Name (ARN) for service access role can be obtained from Section 4.2. 
 
@@ -336,7 +336,7 @@ Up until now, we have completed the connection of the souce MySQL database, AWS 
 	select * from wp_terms; 
 	```
 4. To verify that CDC have happened and the newly inserted data have reached the S3 bucket, we can check by going to [AWS Database Migration Service on the console](https://console.aws.amazon.com/dms/v2/). Click on `Database migration tasks` > `replication-task` > `Table statistics`. For the table `wp_terms`, under the Inserts column, the value is now `4`.
-5. Go to [S3 on the console](https://s3.console.aws.amazon.com/s3/), click on the bucket name `application-migration-s3-raw` > `wordpress-db/` > `wp_terms/`. You will notice that the folder have 2 CSV files. The `LOAD00000001.csv` file belongs to the initial 1 time replication of copying the data from the virtual MySQL database to S3. The CSV file with the date and time, e.g. `20230905-151244585.csv` is the CDC data. 
+5. Go to [S3 on the console](https://s3.console.aws.amazon.com/s3/), click on the bucket name `<<add your bucket name here>>` > `wordpress-db/` > `wp_terms/`. You will notice that the folder have 2 CSV files. The `LOAD00000001.csv` file belongs to the initial 1 time replication of copying the data from the virtual MySQL database to S3. The CSV file with the date and time, e.g. `20230905-151244585.csv` is the CDC data. 
 6. Select the date and time CSV file (e.g. `20230905-151244585.csv`) > `Actions` > `Query with S3 Select` > `Run SQL query`. In the Query results, you should be able to see the 4 entries that was inserted in Step 2 of this section. 
 
 
@@ -383,11 +383,11 @@ In this section, the setting up of IAM policies and role will enable Glue Jobs t
 
 ### 6.2 Create the Processed S3 Bucket
 1. Go to [S3 on the console](https://s3.console.aws.amazon.com/s3/).
-2. Click on **Create Bucket** and fill in the following parameter values before clicking on **Create bucket**. 
+2. Click on **Create Bucket** and fill in the following parameter values and replace `<<add your bucket2 name here>>` before clicking on **Create bucket**. 
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| Bucket name | application-migration-s3-processed |
+	| Bucket name | <<add your bucket2 name here>> |
 	| AWS Region | US West (Oregon) us-west-2 |
 3. This bucket will store processed data after Glue Jobs have completed their tasks.
 
@@ -408,7 +408,7 @@ The LOAD files in the S3 raw bucket are the original data moved from the MySQL d
 1. Go to [AWS Glue on the console](https://console.aws.amazon.com/glue/). 
 2. On the left panel, click on `ETL jobs`. 
 3. Select `Spark script editor` and click on **Create**.
-4. Copy and paste the following into the Script segment. 
+4. Copy and paste the following into the Script segment but do replace the placeholders `<<add your bucket name here>>` and `<<add your bucket2 name here>>`. 
 	```
 	from pyspark.sql import SparkSession
 	from pyspark.sql.functions import lit
@@ -420,8 +420,8 @@ The LOAD files in the S3 raw bucket are the original data moved from the MySQL d
 	    .getOrCreate()
 	
 	# S3 URIs
-	source_bucket = "s3://application-migration-s3-raw/wordpress-db/"
-	destination_bucket = "s3://application-migration-s3-processed/wordpress-db/"
+	source_bucket = "s3://<<add your bucket name here>>/wordpress-db/"
+	destination_bucket = "s3://<<add your bucket2 name here>>/wordpress-db/"
 	
 	# List of folders to process
 	folders_to_process = [
@@ -477,7 +477,7 @@ The CDC files are in the S3 Raw bucket and will need to be copied to the Process
 1. Go to [AWS Glue on the console](https://console.aws.amazon.com/glue/). 
 2. On the left panel, click on `ETL jobs`. 
 3. Select `Spark script editor` and click on **Create**.
-4. Copy and paste the following into the Script segment. 
+4. Copy and paste the following into the Script segment but do replace the placeholders `<<add your bucket name here>>` and `<<add your bucket2 name here>>`. 
 	```
 	import sys
 	from awsglue.utils import getResolvedOptions
@@ -496,8 +496,8 @@ The CDC files are in the S3 Raw bucket and will need to be copied to the Process
 	args = getResolvedOptions(sys.argv, ['JOB_NAME'])
 	
 	# S3 URIs
-	source_bucket = "application-migration-s3-raw"
-	destination_bucket = "application-migration-s3-processed"
+	source_bucket = "<<add your bucket name here>>"
+	destination_bucket = "<<add your bucket2 name here>>"
 	
 	# Initialize an S3 client
 	s3 = boto3.client('s3')
@@ -545,11 +545,11 @@ The CDC files are in the S3 Raw bucket and will need to be copied to the Process
 	| ------------- |-------------|
 	| Name | wordpress-db-crawler |
 	| Is your data already mapped to Glue tables? | Not yet |
-4. Click on **Add a data source** and fill in the following parameter value before clicking on **Add an S3 data source**.
+4. Click on **Add a data source** and fill in the following parameter value. Replace the placeholders `<<add your bucket2 name here>>` before clicking on **Add an S3 data source**.
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| S3 path | s3://application-migration-s3-processed/wordpress-db/ |
+	| S3 path | s3://<<add your bucket2 name here>>/wordpress-db/ |
 5. Click **Next** and fill in the following parameter value. 
 
 	| Parameter | Values |
@@ -572,13 +572,13 @@ This section will cover the use of Amazon Athena to query and analyze the proces
 
 ### 7.1 Create an Endpoint storage for the Athena Queries
 1. Go to [S3 on the console](https://s3.console.aws.amazon.com/s3/).
-2. Select the `application-migration-s3-processed` bucket. We will be creating a folder for the Glue Job to store the joint-tables data after processing. 
+2. Select the `<<add your bucket2 name here>>` bucket. We will be creating a folder for the Glue Job to store the joint-tables data after processing. 
 3. Click on **Create folder**, fill in the following parameter value before clicking on **Create folder**.
 
 	| Parameter | Values |
 	| ------------- |-------------|
 	| Folder name | joint-tables |
-4. In the same `application-migration-s3-processed` bucket, we will create another folder for the Amazon Athena queries to be stored. 
+4. In the same `<<add your bucket2 name here>>` bucket, we will create another folder for the Amazon Athena queries to be stored. 
 5. Click on **Create folder**, fill in the following parameter value before clicking on **Create folder**.
 
 	| Parameter | Values |
@@ -589,13 +589,13 @@ This section will cover the use of Amazon Athena to query and analyze the proces
 1. Go to [AWS Glue on the console](https://console.aws.amazon.com/glue/). 
 2. On the left panel, click on `Tables`. There should be 15 tables in total. 
 3. Click on `Table data` for any one of the table. A prompt will appear, click on **Proceed**. 
-4. Click on **Edit settings**. Fill in the following parameter value before clicking on **Save**.
+4. Click on **Edit settings**. Fill in the following parameter value and replace `<<add your bucket2 name here>>` before clicking on **Save**.
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| Location of query result | s3://application-migration-s3-processed/athena-queries |
+	| Location of query result | s3://<<add your bucket2 name here>>/athena-queries |
 
-	All the unsaved queries ran in Athena can be viewed in the S3 bucket of URI: `s3://application-migration-s3-processed/athena-queries/Unsaved/`.
+	All the unsaved queries ran in Athena can be viewed in the S3 bucket of URI: `s3://<<add your bucket2 name here>>/athena-queries/Unsaved/`.
 
 6. Head back to the `Editor` Tab where you can start querying the different tables of the database `wordpress-db`.
 
@@ -607,7 +607,7 @@ In this section, instructions essential for effectively ingesting, simulating, a
 
 ### 8.1 Create an Endpoint storage for the Data
 1. Go to [S3 on the console](https://s3.console.aws.amazon.com/s3/).
-2. Select the `application-migration-s3-raw` bucket.
+2. Select the `<<add your bucket name here>>` bucket.
 3. Click on **Create folder**. Fill in the following parameter values before clicking on **Create folder**.
 
 	| Parameter | Values |
@@ -630,7 +630,7 @@ This section is crucial for ingesting real-time clickstream data.
 The clickstream data from the Kinesis Data Stream will be input to the Kinesis Data Firehose before the data lands in the S3 bucket. 
 
 1. On the left panel, click on **Data Firehose**. 
-2. Click on **Create delivery stream**. Fill in the following parameter values before clicking on **Create delivery stream**.
+2. Click on **Create delivery stream**. Fill in the following parameter values and replace `<<add your bucket name here>>` before clicking on **Create delivery stream**.
 
 	| Parameter | Values |
 	| ------------- |-------------|
@@ -638,7 +638,7 @@ The clickstream data from the Kinesis Data Stream will be input to the Kinesis D
 	| Destination | Amazon S3 |
 	| Kinesis data stream | \<click Browse and select kds-clickstream-data> |
 	| Delivery stream name | kdf-clickstream-data |
-	| S3 bucket destination | s3://application-migration-s3-raw |
+	| S3 bucket destination | s3://<<add your bucket name here>> |
 	| S3 bucket prefix | clickstream-data/ |
 	| Buffer size | 1 MiB |
 	| Buffer interval | 60 seconds | 
@@ -688,7 +688,7 @@ In this section, you will be deploying a CloudFormation template in your AWS clo
 	```
 10. Click on **Send data**. Allow 100,000 records to be sent to Kinesis before clicking on **Stop Sending Data to Kinesis**. 
 11. You can check that the data have indeed reached the assigned S3 bucket. Go to [S3 on the console](https://s3.console.aws.amazon.com/s3/).
-12. Select the `application-migration-s3-raw` bucket > `clickstream-data/`.
+12. Select the `<<add your bucket name here>>` bucket > `clickstream-data/`.
 13. Follow the directory to eventually reach the folder with the data files.
 
 	![img15](/images/img15.png)
@@ -701,11 +701,11 @@ This section updates the existing Glue Crawler to include the newly ingested cli
 2. On the left panel, click on `Crawlers`. 
 3. Select the existing `wordpress-db-crawler`, click on **Action** followed by **Edit crawler**.
 4. Click the **Edit** button next to Step 2: Choose data sources and classifiers.
-5. Click **Add a data source** and fill in the following parameter values before clicking on **Add an S3 data source**.
+5. Click **Add a data source** and fill in the following parameter values. Replace `<<add your bucket name here>>` before clicking on **Add an S3 data source**.
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| S3 path | s3://application-migration-s3-raw/clickstream-data/ |
+	| S3 path | s3://<<add your bucket name here>>/clickstream-data/ |
 6. Click **Next** three times followed by **Update**. 
 7. Click on **Run crawler** and wait for the State to update to `Completed`. 
 
@@ -726,7 +726,7 @@ This section provide instructions for joining tables from two different sources 
 These steps ensures that the output of the join operation has a designated storage location, making it accessible for further analysis and queries.
 
 1. Go to [S3 on the console](https://s3.console.aws.amazon.com/s3/).
-2. Select the `application-migration-s3-processed` bucket.
+2. Select the `<<add your bucket2 name here>>` bucket.
 3. Click on **Create folder**, fill in the following parameter values before clicking on **Create folder**.
 
 	| Parameter | Values |
@@ -790,7 +790,7 @@ These steps ensures that the output of the join operation has a designated stora
 			| Name | Change Schema - 3 |
 			| Node parents | Join |
 	7. Output Destination: To the S3 bucket.
-		1. Select `Data` > `Targets` > `Amazon S3`, and use the following parameter values.
+		1. Select `Data` > `Targets` > `Amazon S3`, and use the following parameter values, replace `<<add your bucket2 name here>>`.
 		
 	  		| Parameter | Values |
 			| ------------- |-------------|
@@ -798,7 +798,7 @@ These steps ensures that the output of the join operation has a designated stora
 			| Node parents | Change Schema - 3 |
 			| Format | Parquet |
 			| Compression Type | Snappy |
-			| S3 Target Location | s3://application-migration-s3-processed/joint-tables/ |
+			| S3 Target Location | s3://<<add your bucket2 name here>>/joint-tables/ |
 6. Click on the **Job details** tab and fill in the following parameter values. 
 
 	| Parameter | Values |
@@ -817,11 +817,11 @@ The AWS Glue Crawler is configured again to catalog the newly joined table. Cata
 2. On the left panel, click on **Crawlers**. 
 3. Select the existing `wordpress-db-crawler`, click **Action** followed by **Edit crawler**.
 4. Click the **Edit** button next to Step 2: Choose data sources and classifiers.
-5. Click **Add a data source** and fill in the following parameter values before clicking on **Add an S3 data source**.
+5. Click **Add a data source** and fill in the following parameter values. Replace `<<add your bucket2 name here>>` before clicking on **Add an S3 data source**.
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| S3 path | s3://application-migration-s3-processed/joint-tables/ |
+	| S3 path | s3://<<add your bucket2 name here>>/joint-tables/ |
 6. Click **Next** three times followed by **Update**. 
 7. Click on **Run crawler** and wait for the State to update to `Completed`. 
 

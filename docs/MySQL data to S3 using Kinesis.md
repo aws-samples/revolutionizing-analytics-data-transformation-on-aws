@@ -21,14 +21,14 @@ In this section, we will be creating an S3 bucket and its permission for the MyS
 
 ### 1.1 Create the Target S3 Bucket
 1. Go to [S3 on the console](https://s3.console.aws.amazon.com/s3/).
-2. Click on **Create Bucket**, fill the following parameter values before clicking on **Create bucket**. 
+2. Click on **Create Bucket**, fill the following parameter values and replace `<add your bucket name here>` before clicking on **Create bucket**. 
 
 	| Parameter | Values |
 	| ------------- |-------------|
-	| Bucket name | application-migration-s3-raw |
+	| Bucket name | \<add your bucket name here> |
 	| AWS Region | US West (Oregon) us-west-2 |
 
-3. Select the `application-migration-s3-raw` bucket.
+3. Select the `<add your bucket name here>` bucket.
 4. Click on **Create folder**. Fill in the following parameter values before clicking on **Create folder**.
 
 	| Parameter | Values |
@@ -73,7 +73,7 @@ The MySQL data from the Kinesis Data Stream will be input to the Kinesis Data Fi
 	| Destination | Amazon S3 |
 	| Kinesis data stream | \<click Browse and select kds-mysql-data> |
 	| Delivery stream name | kdf-mysql-data |
-	| S3 bucket destination | s3://application-migration-s3-raw |
+	| S3 bucket destination | s3://\<add your bucket name here> |
 	| S3 bucket prefix | wordpress-db/ |
 	| Buffer size | 1 MiB |
 	| Buffer interval | 60 seconds | 
